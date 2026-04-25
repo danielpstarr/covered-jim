@@ -33,19 +33,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-      {/* Desktop top nav */}
-      <div className="hidden sm:block sticky top-0 z-40">
-        <TabBar active={activeTab} onChange={setActiveTab} />
-      </div>
-
-      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-24 sm:pb-6">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl sm:text-xl font-bold text-gray-900">Covered Jim</h1>
-            {lastUpdated && (
-              <p className="text-xs text-gray-400 mt-0.5">{lastUpdated.toLocaleTimeString()}</p>
-            )}
+            <h1 className="text-xl font-bold text-gray-900">Covered Jim</h1>
+            {lastUpdated && <p className="text-xs text-gray-400">{lastUpdated.toLocaleTimeString()}</p>}
           </div>
           <div className="flex gap-2">
             <ShareButton
@@ -61,12 +54,19 @@ export default function App() {
             </button>
           </div>
         </div>
+      </div>
 
+      {/* Tabs — always at top */}
+      <div className="sticky top-0 z-40">
+        <TabBar active={activeTab} onChange={setActiveTab} />
+      </div>
+
+      {/* Content */}
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {error && (
           <div className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-2 mb-4">{error}</div>
         )}
 
-        {/* Loading skeleton */}
         {loading && !hasData ? (
           <div className="space-y-3">
             {[1,2,3,4,5].map(i => (
@@ -78,18 +78,10 @@ export default function App() {
           </div>
         ) : (
           <div id="export-region">
-            {activeTab === 'overview' && (
-              <OverviewView prices={prices} portfolio={portfolio} calc={calc} />
-            )}
-            {activeTab === 'calculator' && (
-              <CalculatorView prices={prices} portfolio={portfolio} calc={calc} />
-            )}
-            {activeTab === 'whatif' && (
-              <WhatIfView projections={calc.projections} totals={calc.totals} />
-            )}
-            {activeTab === 'pnl' && (
-              <PnLView projections={calc.projections} totals={calc.totals} />
-            )}
+            {activeTab === 'overview' && <OverviewView prices={prices} portfolio={portfolio} calc={calc} />}
+            {activeTab === 'calculator' && <CalculatorView prices={prices} portfolio={portfolio} calc={calc} />}
+            {activeTab === 'whatif' && <WhatIfView projections={calc.projections} totals={calc.totals} />}
+            {activeTab === 'pnl' && <PnLView projections={calc.projections} totals={calc.totals} />}
           </div>
         )}
 
@@ -101,26 +93,6 @@ export default function App() {
           Data from Polygon.io. Not financial advice. All projections hypothetical.
         </div>
       </div>
-
-      {/* Mobile bottom tab bar */}
-      <TabBar active={activeTab} onChange={setActiveTab} />
-
-      {/* Floating summary on mobile (overview + calculator tabs) */}
-      {(activeTab === 'overview' || activeTab === 'calculator') && calc.totals.totalUpfront > 0 && (
-        <div className="fixed bottom-[56px] left-0 right-0 bg-emerald-700 text-white sm:hidden shadow-lg z-30"
-          style={{ marginBottom: 'env(safe-area-inset-bottom)' }}>
-          <div className="flex justify-between items-center max-w-[500px] mx-auto px-4 py-2">
-            <div>
-              <div className="text-[10px] text-emerald-200">Upfront (Tax-Free)</div>
-              <div className="text-base font-bold">{fmtD(calc.totals.totalUpfront)}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] text-emerald-200">Annualized</div>
-              <div className="text-base font-bold">{fmtD(calc.totals.totalAnnualized)}</div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
